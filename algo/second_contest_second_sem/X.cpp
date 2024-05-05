@@ -1,6 +1,5 @@
 #include <vector>
 #include <iostream>
-#include <map>
 #include <algorithm>
 #include <unordered_set>
 #include <unordered_map>
@@ -18,6 +17,14 @@ int Median(int& first, int& second, int& third) {
   return first + second + third - Max(first, second, third) - Min(first, second, third);
 }
 
+size_t CantorsFunc(size_t first, size_t second) {
+  return (first * first + first + 2 * first * second + 3 * second + second * second) / 2;
+}
+
+size_t CantorsTriple(size_t first, size_t second, size_t third) {
+  return CantorsFunc(CantorsFunc(first, second), third);
+}
+
 struct Triple {
   int first;
   int second;
@@ -29,11 +36,8 @@ struct Triple {
 
 struct Hash {
   size_t operator()(const Triple& val) const noexcept {
-    size_t seed = 0;
-    seed ^= std::hash<int>()(val.first) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-    seed ^= std::hash<int>()(val.second) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-    seed ^= std::hash<int>()(val.third) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-    return seed;
+    return CantorsTriple(static_cast<size_t>(val.first), static_cast<size_t>(val.second),
+                         static_cast<size_t>(val.third));
   }
 };
 
