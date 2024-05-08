@@ -205,11 +205,11 @@ class UnorderedSet {
       ++next;
       ++prev;
     }
-    if (counter == 1 && next == elements_.end() && fl) {
+    if (fl && counter == 1 && next == elements_.end()) {
       buckets_[index] = elements_.end();
       return;
     }
-    if (counter == 1 && hasher(*next) % buckets_.size() != index && fl) {
+    if (fl && counter == 1 && hasher(*next) % buckets_.size() != index) {
       size_t new_index = hasher(*next) % buckets_.size();
       buckets_[new_index] = prev;
       buckets_[index] = elements_.end();
@@ -250,12 +250,7 @@ class UnorderedSet {
         return;
       }
     }
-    if (iterator != elements_.end()) {
-      size_t next_hash = hasher(*iterator) % buckets_.size();
-      buckets_[next_hash] = elements_.insert_after(buckets_[next_hash], key);
-    } else {
-      elements_.insert_after(buckets_[index], key);
-    }
+    elements_.insert_after(buckets_[index], key);
     ++sz_;
     if (static_cast<double>(sz_) / buckets_.size() > max_load_factor_) {
       Rehash(buckets_.size() * 2);
@@ -300,12 +295,7 @@ class UnorderedSet {
         return;
       }
     }
-    if (iterator != elements_.end()) {
-      size_t next_hash = hasher(*iterator) % buckets_.size();
-      buckets_[next_hash] = elements_.insert_after(buckets_[next_hash], std::move(key));
-    } else {
-      elements_.insert_after(buckets_[index], std::move(key));
-    }
+    elements_.insert_after(buckets_[index], std::move(key));
     ++sz_;
     if (static_cast<double>(sz_) / buckets_.size() > max_load_factor_) {
       Rehash(buckets_.size() * 2);
